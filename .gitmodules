@@ -1,3 +1,3 @@
-[submodule "WordPress-Skeleton"]
-	path = WordPress-Skeleton
-	url = git://github.com/markjaquith/WordPress-Skeleton
+[submodule "_s"]
+	path = wp-content/themes
+	url = git://github.com/rp3agency/_s
