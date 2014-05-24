@@ -1,3 +1,3 @@
-[submodule "_s"]
-	path = wp-content/themes
-	url = git://github.com/rp3agency/_s
+[submodule "wp-content/themes/_s"]
+	path = wp-content/themes/_s
+	url = git@github.com:RP3Agency/_s.git
