@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
   config.vm.define 'rp3-website' do |node|
-    node.vm.provision :shell, :path => "provisioning/bootstrap.sh"
+    node.vm.provision :shell, :path => "provision/bootstrap.sh"
     node.vm.hostname = 'rp3-website-hostname'
     node.vm.network :private_network, ip: '192.168.50.201'
     node.hostmanager.aliases = %w(rp3-website.dev)
