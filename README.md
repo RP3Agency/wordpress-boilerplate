@@ -1,3 +1,5 @@
+## Starting a project
+
 1. Update "Gemfile" with the ruby gems (along with the version numbers) that you need for your project.
 2. Update "composer.json" with the WordPress plugins you need (and update the version of WordPress core if it's not up to date).
 3. Edit "gulpfile.js" with the proper directory to the custom theme you're developing.
@@ -6,3 +8,6 @@
 6. `vagrant up`
 7. `vagrant ssh`
 8. All automation tasks -- composer, gulp, etc. -- should be run from within the vagrant virtual machine.
+
+
+After all of this is done and your project is up and running, remove the .git/ directory and create a new repository for the project on Beanstalk.
