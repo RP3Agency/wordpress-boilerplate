@@ -29,11 +29,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
-  config.vm.define 'rp3-website' do |node|
+  config.vm.define 'PROJECTNAME-website' do |node|
     node.vm.provision :shell, :path => "provision/bootstrap.sh"
-    node.vm.hostname = 'rp3-website-hostname'
-    node.vm.network :private_network, ip: '192.168.50.201'
-    node.hostmanager.aliases = %w(rp3-website.dev)
+    node.vm.hostname = 'PROJECTNAME-website-hostname'
+    node.vm.network :private_network, ip: '192.168.50.200'
+    node.hostmanager.aliases = %w(PROJECTNAME-website.dev)
   end
 
   # Create a public network, which generally matched to bridged network.
