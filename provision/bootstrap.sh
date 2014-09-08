@@ -1,12 +1,23 @@
 #!/usr/bin/env bash
 
 # Update variables here. We'll get to them later in the script.
+
+# Database
 MYSQL_PASS=
+
+# Base WordPress Installation
 DEV_URL=
 DEV_TITLE=
 DEV_ADMIN_USER=
 DEV_ADMIN_PASSWORD=
 DEV_ADMIN_EMAIL=
+
+# _s Starter Theme (must be urlencoded. Try http://meyerweb.com/eric/tools/dencoder/)
+THEME_NAME=
+THEME_SLUG=
+THEME_AUTHOR=
+THEME_AUTHOR_URI=
+THEME_DESCRIPTION=
 
 
 
@@ -104,3 +115,7 @@ sudo -u www-data -i -- wp db create
 
 # Install the bare minimum of our site
 sudo -u www-data -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
+
+# Pull down a copy of _s and rename it for our project
+curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_generate_submit=Generate&underscoresme_sass=1" http://underscores.me > me.zip
+mv wp-content/themes/$THEME_SLUG/sass src
