@@ -89,8 +89,6 @@ apt-get install -y mysql-server mysql-client >/dev/null 2>&1
 mysql -uroot -proot -p$MYSQL_PASS -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '"$MYSQL_PASS"'; FLUSH PRIVILEGES;"
 service mysql restart
 
-
-
 echo "Getting php5 & mysql to talk to each other..."
 apt-get install -y php5-mysql >/dev/null 2>&1
 
@@ -104,7 +102,7 @@ mv wp-cli.phar /usr/bin/wp
 
 echo "Installing pecl_http"
 apt-get install -y libpcre3-dev php-http php-pear libcurl3-openssl-dev >/dev/null 2>&1
-pear config-set php_ini /etc/php5/apache2/php.ini; sudo pecl config-set php_ini /etc/php5/apache2/php.ini
+pear config-set php_ini /etc/php5/apache2/php.ini  >/dev/null 2>&1; sudo pecl config-set php_ini /etc/php5/apache2/php.ini  >/dev/null 2>&1
 printf "\n" | sudo pecl install pecl_http-1.7.6 >/dev/null 2>&1
 
 echo "Restarting Apache"
@@ -114,14 +112,14 @@ echo "Initializing our WordPress installation..."
 cd /var/www
 
 # Create the database based on values that already exist in wp-config.php
-sudo -u www-data -i -- wp db create
+sudo -u vagrant -i -- wp db create
 
 # Install the bare minimum of our site
-sudo -u www-data -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
+sudo -u vagrant -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
 
 # Pull down a copy of _s, install and activate it
 curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_generate_submit=Generate&underscoresme_sass=1" http://underscores.me > /var/www/me.zip
-wp theme install /var/www/me.zip
-wp theme activate $THEME_SLUG
+sudo -u vagrant wp theme install /var/www/me.zip
+sudo -u vagrant wp theme activate $THEME_SLUG
 mv /var/www/wp-content/themes/$THEME_SLUG/sass /var/www/src
 mv /var/www/wp-content/themes/$THEME_SLUG/js /var/www/src
