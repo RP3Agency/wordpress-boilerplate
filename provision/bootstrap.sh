@@ -23,7 +23,7 @@ THEME_DESCRIPTION=
 
 # Now go forth and provision...
 
-echo "Install Node and npm"
+echo "Installing Node and npm"
 apt-get update >/dev/null 2>&1
 apt-get install -y software-properties-common python-software-properties >/dev/null 2>&1
 apt-get install -y python g++ make >/dev/null 2>&1
@@ -91,11 +91,6 @@ apt-get install -y php5-mysql >/dev/null 2>&1
 echo "Installing vim..."
 apt-get install -y vim >/dev/null 2>&1
 
-echo "Installing wp-cli..."
-curl -L https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > wp-cli.phar >/dev/null 2>&1
-chmod +x wp-cli.phar
-mv wp-cli.phar /usr/bin/wp
-
 echo "Installing pecl_http"
 apt-get install -y libpcre3-dev php-http php-pear libcurl3-openssl-dev >/dev/null 2>&1
 pear config-set php_ini /etc/php5/apache2/php.ini >/dev/null 2>&1
@@ -105,20 +100,25 @@ printf "\n" | pecl install pecl_http-1.7.6 >/dev/null 2>&1
 echo "Restarting Apache"
 service apache2 restart
 
+echo "Installing wp-cli..."
+curl -L https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > wp-cli.phar
+chmod +x wp-cli.phar
+mv wp-cli.phar /usr/bin/wp
+
 echo "Initializing our WordPress installation..."
 cd /var/www
 
 # Create the database based on values that already exist in wp-config.php
-sudo -u vagrant -i -- wp --path=/var/www/_wp db create
+sudo -u vagrant -i -- wp db create
 
 # Install the bare minimum of our site
-sudo -u vagrant -i -- wp --path=/var/www/_wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
+sudo -u vagrant -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
 
 # Pull down a copy of _s, install and activate it
 cd /var/www
-curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_sass=1&underscoresme_generate_submit=Generate" http://underscores.me > /var/www/underscores.zip
-sudo -u vagrant wp --path=/var/www/_wp theme install /var/www/underscores.zip
-sudo -u vagrant wp --path=/var/www/_wp theme activate $THEME_SLUG
+sudo -u vagrant curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_sass=1&underscoresme_generate_submit=Generate" http://underscores.me > /var/www/underscores.zip
+sudo -u vagrant wp theme install /var/www/underscores.zip
+sudo -u vagrant wp theme activate $THEME_SLUG
 sudo -u vagrant mv /var/www/wp-content/themes/$THEME_SLUG/sass /var/www/src
 sudo -u vagrant mv /var/www/wp-content/themes/$THEME_SLUG/js /var/www/src
-rm /var/www/underscores.zip
+sudo -u vagrant rm /var/www/underscores.zip
