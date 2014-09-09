@@ -33,6 +33,12 @@ define('DB_CHARSET', 'utf8');
 /** The Database Collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 
+// ========================
+// Custom Content Directory
+// ========================
+define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/wp-content' );
+define( 'WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/wp-content' );
+
 /**#@+
  * Authentication Unique Keys and Salts.
  *
