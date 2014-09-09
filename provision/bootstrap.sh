@@ -119,6 +119,9 @@ sudo -u www-data -i -- wp db create
 # Install the bare minimum of our site
 sudo -u www-data -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
 
-# Pull down a copy of _s and rename it for our project
-curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_generate_submit=Generate&underscoresme_sass=1" http://underscores.me > me.zip
-mv wp-content/themes/$THEME_SLUG/sass src
+# Pull down a copy of _s, install and activate it
+curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_generate_submit=Generate&underscoresme_sass=1" http://underscores.me > /var/www/me.zip
+wp theme install /var/www/me.zip
+wp theme activate $THEME_SLUG
+mv /var/www/wp-content/themes/$THEME_SLUG/sass /var/www/src
+mv /var/www/wp-content/themes/$THEME_SLUG/js /var/www/src
