@@ -31,13 +31,6 @@ add-apt-repository -y ppa:chris-lea/node.js >/dev/null 2>&1
 apt-get update >/dev/null 2>&1
 apt-get install -y nodejs >/dev/null 2>&1
 
-echo "Installing gulp globally"
-npm install gulp -g >/dev/null 2>&1
-
-echo "Installing Local Packages"
-cd /vagrant
-npm install >/dev/null 2>&1
-
 echo "Installing Ruby"
 apt-get install -y ruby-full build-essential >/dev/null 2>&1
 apt-get install -y rubygems >/dev/null 2>&1
@@ -49,9 +42,12 @@ echo "Installing Sass and other Sass-related things via Bundler"
 cd /vagrant # Let's just make doubly sure we're in the correct directory
 sudo -u vagrant bundle install >/dev/null 2>&1
 
-# echo "Running gulp for build compilation"
-# cd /vagrant
-# gulp
+echo "Installing gulp globally"
+npm install gulp -g >/dev/null 2>&1
+
+echo "Installing Local Packages"
+cd /vagrant
+npm install >/dev/null 2>&1
 
 echo "Installing apache2..."
 apt-get update >/dev/null 2>&1
@@ -102,8 +98,9 @@ mv wp-cli.phar /usr/bin/wp
 
 echo "Installing pecl_http"
 apt-get install -y libpcre3-dev php-http php-pear libcurl3-openssl-dev >/dev/null 2>&1
-pear config-set php_ini /etc/php5/apache2/php.ini  >/dev/null 2>&1; sudo pecl config-set php_ini /etc/php5/apache2/php.ini  >/dev/null 2>&1
-printf "\n" | sudo pecl install pecl_http-1.7.6 >/dev/null 2>&1
+pear config-set php_ini /etc/php5/apache2/php.ini >/dev/null 2>&1
+pecl config-set php_ini /etc/php5/apache2/php.ini >/dev/null 2>&1
+printf "\n" | pecl install pecl_http-1.7.6 >/dev/null 2>&1
 
 echo "Restarting Apache"
 service apache2 restart
@@ -112,14 +109,16 @@ echo "Initializing our WordPress installation..."
 cd /var/www
 
 # Create the database based on values that already exist in wp-config.php
-sudo -u vagrant -i -- wp db create
+sudo -u vagrant -i -- wp --path=/var/www/_wp db create
 
 # Install the bare minimum of our site
-sudo -u vagrant -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
+sudo -u vagrant -i -- wp --path=/var/www/_wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
 
 # Pull down a copy of _s, install and activate it
-curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_generate_submit=Generate&underscoresme_sass=1" http://underscores.me > /var/www/me.zip
-sudo -u vagrant wp theme install /var/www/me.zip
-sudo -u vagrant wp theme activate $THEME_SLUG
-mv /var/www/wp-content/themes/$THEME_SLUG/sass /var/www/src
-mv /var/www/wp-content/themes/$THEME_SLUG/js /var/www/src
+cd /var/www
+curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_sass=1&underscoresme_generate_submit=Generate" http://underscores.me > /var/www/underscores.zip
+sudo -u vagrant wp --path=/var/www/_wp theme install /var/www/underscores.zip
+sudo -u vagrant wp --path=/var/www/_wp theme activate $THEME_SLUG
+sudo -u vagrant mv /var/www/wp-content/themes/$THEME_SLUG/sass /var/www/src
+sudo -u vagrant mv /var/www/wp-content/themes/$THEME_SLUG/js /var/www/src
+rm /var/www/underscores.zip
