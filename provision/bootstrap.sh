@@ -109,16 +109,16 @@ echo "Initializing our WordPress installation..."
 cd /var/www
 
 # Create the database based on values that already exist in wp-config.php
-sudo -u vagrant -i -- wp db create
+sudo -u vagrant -i -- wp --path=/var/www/_wp db create
 
 # Install the bare minimum of our site
-sudo -u vagrant -i -- wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
+sudo -u vagrant -i -- wp --path=/var/www/_wp core install --url="$DEV_URL" --title="$DEV_TITLE" --admin_user="$DEV_ADMIN_USER" --admin_password="$DEV_ADMIN_PASSWORD" --admin_email="$DEV_ADMIN_EMAIL"
 
 # Pull down a copy of _s, install and activate it
 cd /var/www
 sudo -u vagrant curl -d "underscoresme_generate=1&underscoresme_name=$THEME_NAME&underscoresme_slug=$THEME_SLUG&underscoresme_author=$THEME_AUTHOR&underscoresme_author_uri=$THEME_AUTHOR_URI&underscoresme_description=$THEME_DESCRIPTION&underscoresme_sass=1&underscoresme_generate_submit=Generate" http://underscores.me > /var/www/underscores.zip
-sudo -u vagrant wp theme install /var/www/underscores.zip
-sudo -u vagrant wp theme activate $THEME_SLUG
+sudo -u vagrant wp --path=/var/www/_wp theme install /var/www/underscores.zip
+sudo -u vagrant wp --path=/var/www/_wp theme activate $THEME_SLUG
 sudo -u vagrant mv /var/www/wp-content/themes/$THEME_SLUG/sass /var/www/src
 sudo -u vagrant mv /var/www/wp-content/themes/$THEME_SLUG/js /var/www/src
 sudo -u vagrant rm /var/www/underscores.zip
